@@ -6,7 +6,7 @@ const SECRET_KEY = 'asd jsshdlignsdogin;gozdnsgiseau4htvefnv4 ht werm';
 const app = express();
 const port = 3000;
 
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 const users = database.users;
@@ -29,12 +29,12 @@ app.post('/login', (request, response) => {
         return;
     }
 
-    const token = jwt.sign({id: foundUser.id}, SECRET_KEY);
+    const token = jwt.sign({ id: foundUser.id }, SECRET_KEY);
 
-    response.send({token: token});
+    response.send({ token: token });
 });
 
-app.post('/account', function (request, response) {
+app.post('/account', function(request, response) {
     const token = request.headers.authorization.replace('Bearer ', '');
     try {
         var tokenData = jwt.verify(token, SECRET_KEY);
@@ -44,12 +44,39 @@ app.post('/account', function (request, response) {
     }
     const user = users.find(user => user.id === tokenData.id);
 
-    const account = request.body;
-    account.amount = 0;
-    account.iban = parseInt(Math.random() * 100000000000);
+    const account = new Account(request.body.currency, request.body.type);
     user.accounts.push(account);
     response.send(user);
 });
 
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+
+class User {
+    constructor() {
+        this.accounts = [];
+    }
+
+    push(account) {
+        this.accounts.push(account);
+    }
+
+    pop() {
+        return this.accounts.pop();
+    }
+};
+
+class Account {
+    constructor(currency, type) {
+        this.currency = currency;
+        this.type = type;
+        this.amount = 0;
+
+        let iban = Account.getIBAN();
+        this.iban = iban;
+    }
+
+    static getIBAN() {
+        return "RO" + Math.round(Math.random() * 100) + "GMF" + Math.round(Math.random() * 100000000000) + "CC" + Math.round(Math.random() * 100000);
+    }
+};
