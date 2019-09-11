@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Make a transaction</title>
+  
+  <link href="https://fonts.googleapis.com/css?family=Dosis:400,700" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <link href="css/balance.css" rel="stylesheet">
+
+  <script> 
+    function setToken() {
+      if (typeof(Storage) !== "undefined") {
+        sessionStorage.token = window.location.href.split('token=').pop();
+      } else {
+        alert('Your browser does not support web storage');
+      }
+    }
+  </script>
+
+</head>
+
+<body>
+  <script> setToken(); </script>
+
+  <div id="root">
+
+    <img src="aur.png">
+
+  <h1>Choose type</h1>
+<label class="container2"> Transaction
+  <input id="transaction" type="radio" checked="checked" name="type">
+  <span class="checkmark"></span>
+</label>
+<label class="container2"> Cash In (no source account)
+  <input id="cashin" type="radio" name="type">
+  <span class="checkmark"></span>
+</label>
+<label class="container2"> Cash Out (no destination account)
+  <input id="cashout" type="radio" name="type">
+  <span class="checkmark"></span>
+</label>
+
+    <h1>Choose currency</h1>
+<label class="container2">RON
+  <input id="ron" type="radio" checked="checked" name="currency">
+  <span class="checkmark"></span>
+</label>
+<label class="container2">EUR
+  <input id="eur" type="radio" name="currency">
+  <span class="checkmark"></span>
+</label>
+<label class="container2">USD
+  <input id="usd" type="radio" name="currency">
+  <span class="checkmark"></span>
+</label>
+
+     <label for="amount"><b>Enter amount</b></label>
+    <input type="number" step="0.1" placeholder="Enter amount" name="amount" required>
+ <br> </br>
+
+    <label for="sourceAccount"><b>Enter IBAN of source account (leave empty if cash in)</b></label>
+    <input type="text" placeholder="Source IBAN" name="sourceAccount" >
+
+    <label for="destinationAccount"><b>Enter IBAN of destination account (leave empty if cash out)</b></label>
+    <input type="text" placeholder="Destination IBAN" name="destinationAccount" >
+
+    <label for="details"><b>Details (optional)</b></label>
+    <input type="text" placeholder="details..." name="details" >
+
+	<h1 onclick="clicked()"> DONE </h1>
+	<button onclick="goBack()"> Back to menu </button>
+
+   <script>
+      function goBack(){window.open("menu.html?token="+sessionStorage.token, "_self")}
+      function clicked() {
+      	var body = {};
+
+      	document.getElementsByName("currency").forEach(function(item) {
+          if (!body['currency'] && item.checked == true)
+            body['currency'] = item.id.toUpperCase();
+        });
+        document.getElementsByName("type").forEach(function(item) {
+          if (!body['type'] && item.checked == true)
+            body['type'] = item.id;
+        });
+        body['amount'] = document.getElementsByName('amount')[0].value;
+        body['source'] = document.getElementsByName('sourceAccount')[0].value;
+        body['destination'] = document.getElementsByName('destinationAccount')[0].value;
+        body['details'] = document.getElementsByName('details')[0].value;
+
+          var request = new XMLHttpRequest();
+          request.open('POST', 'http://localhost:3000/transactions', true);
+          request.setRequestHeader('Authorization', 'Bearer '+sessionStorage.token);
+          request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+          request.onload = function() {
+            if (this.readyState === request.DONE && this.status == 200) {
+              alert('Transaction completed successfully');
+            }
+            else {
+              alert('Could not complete transaction');
+            }
+          } 
+          request.send(JSON.stringify(body));
+      }
+      
+  </script>
+
+</div>
+
+</body>
+</html>

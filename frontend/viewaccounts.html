@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Accounts</title>
+  
+  <link href="https://fonts.googleapis.com/css?family=Dosis:400,700" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+
+  <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+<!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
+<!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" href="vendor/perfect-scrollbar/perfect-scrollbar.css">
+<!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" href="css/util.css">
+  <link rel="stylesheet" type="text/css" href="css/main.css">
+
+  <script> 
+  	function setToken(token) {
+  		if (typeof(Storage) !== "undefined") {
+        sessionStorage.token = window.location.href.split('token=').pop();
+    	} else {
+    		alert('Your browser does not support web storage');
+  		}
+	}
+  </script>
+
+</head>
+
+<body>
+
+  <div id="root">
+  	<img src="aur.png">
+    
+          <div class="table" id="mytable">
+
+            <div class="row header">
+              <div class="cell">
+                Type
+              </div>
+              <div class="cell">
+                Amount
+              </div>
+              <div class="cell">
+                Currency
+              </div>
+              <div class="cell">
+                IBAN
+              </div>
+            </div>
+
+          </div>
+    </div>
+
+<div class="buttonwrapper">
+  <button onclick="goBack()"> Back to menu </button>
+</div>
+
+	<script>
+    function goBack(){window.open("menu.html?token="+sessionStorage.token, "_self")}
+		
+    var request = new XMLHttpRequest();
+    request.open('GET', 'http://localhost:3000/accounts', true);
+    request.setRequestHeader('Authorization', 'Bearer '+sessionStorage.token);
+    request.onload = function() {
+      if (this.readyState === request.DONE && this.status == 200) {
+        var body = JSON.parse(this.response);
+        if (!body)
+          alert('You have 0 accounts');
+        body.forEach(function(account) {
+          var newRow = document.createElement("div");
+          newRow.classList.add('row');
+          var type = document.createElement("div");
+          type.classList.add('cell');
+          type.innerHTML = account['type'];
+          newRow.append(type);
+
+          var amount = document.createElement("div");
+          amount.classList.add('cell');
+          amount.innerHTML = account['amount'];
+          newRow.append(amount);
+
+          var currency = document.createElement("div");
+          currency.classList.add('cell');
+          currency.innerHTML = account['currency'];
+          newRow.append(currency);
+
+          var iban = document.createElement("div");
+          iban.classList.add('cell');
+          iban.innerHTML = account['iban'];
+          newRow.append(iban);
+
+          document.getElementById('mytable').append(newRow);
+        });
+      }
+      else {
+        alert('Something went wrong');
+      }
+    } 
+    request.send();
+	</script>
+
+</body>
+</html>

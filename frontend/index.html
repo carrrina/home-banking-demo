@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Carina's Banking App</title>
+  
+  <link href="https://fonts.googleapis.com/css?family=Dosis:400,700" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+
+  <script> 
+  	function setToken(token) {
+  		if (typeof(Storage) !== "undefined") {
+    		sessionStorage.token = token;
+    	} else {
+    		alert('Your browser does not support web storage');
+  		}
+	}
+  </script>
+
+</head>
+
+<body>
+
+  <div id="root">
+
+  	<img src="aur.png">
+
+  	<h1> Welcome to Carina's Banking App! </h1>
+
+  	<form method="POST" action="http://localhost:3000/login" enctype="application/json">
+
+  <div class="container1">
+    <label for="username"><b>Username</b></label>
+    <input type="text" placeholder="Enter Username" name="username" required>
+
+    <label for="password"><b>Password</b></label>
+    <input type="password" placeholder="Enter Password" name="password" required>
+        
+    <button type="submit">Login</button>
+    <label>
+      <input type="checkbox" checked="checked" name="remember"> Remember me
+    </label>
+  </div>
+
+	</form>
+
+	<script>
+		var form = document.forms[0];
+		form.onsubmit = function(e) {
+			e.preventDefault();
+  			var body = {};
+  			for (var i = 0, ii = form.length; i < ii; ++i) {
+    			var input = form[i];
+    			if (input.name) body[input.name] = input.value;
+  			}
+
+  			var request = new XMLHttpRequest();
+  			request.open(form.method, form.action, true);
+  			request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+  			request.onload = function() {
+  				if (this.readyState === request.DONE && this.status == 200) {
+  					var token = JSON.parse(this.response).token;
+    				setToken(token);
+    				window.open("menu.html?token="+token, "_self");
+  				}
+  				else {
+  					alert('Wrong username or password');
+  				}
+  			}	
+  			request.send(JSON.stringify(body));
+		}
+	</script>
+
+</div>
+
+</body>
+</html>

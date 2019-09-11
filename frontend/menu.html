@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Menu</title>
+  
+  <link href="https://fonts.googleapis.com/css?family=Dosis:400,700" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+
+  <script> 
+    function setToken() {
+      if (typeof(Storage) !== "undefined") {
+        sessionStorage.token = window.location.href.split('token=').pop();
+      } else {
+        alert('Your browser does not support web storage');
+      }
+    }
+  </script>
+
+</head>
+
+<body>
+  <script> setToken(); </script>
+
+  <div id="root">
+
+    <img src="aur.png">
+
+    <h1 onclick="clicked1()"> Check your total balance </h1>
+    <h1 onclick="clicked2()"> Make a transaction </h1>
+    <h1 onclick="clicked3()"> View your past transactions </h1>
+    <h1 onclick="clicked4()"> View your existing accounts </h1>
+    <h1 onclick="clicked5()"> Create a new account </h1>
+    <h1 onclick="clicked6()"> Delete an account (it must be empty) </h1>
+    <h1 onclick="clicked7()"> LOGOUT </h1>
+
+   <script>
+      function clicked1() {
+        window.open("balance.html?token="+sessionStorage.token, "_self");
+      }
+
+      function clicked2() {
+        window.open("maketransaction.html?token="+sessionStorage.token, "_self");
+      }
+      function clicked3() {
+        window.open("viewtransactions.html?token="+sessionStorage.token, "_self");
+      }
+      function clicked4() {
+        window.open("viewaccounts.html?token="+sessionStorage.token, "_self");
+      }
+      function clicked5() {
+        window.open("create.html?token="+sessionStorage.token, "_self");
+      }
+      function clicked6() {
+        window.open("delete.html?token="+sessionStorage.token, "_self");
+      }
+      function clicked7() {
+        window.open("index.html", "_self");
+      }
+  </script>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Add an account</title>
+  
+  <link href="https://fonts.googleapis.com/css?family=Dosis:400,700" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <link href="css/balance.css" rel="stylesheet">
+
+  <script> 
+    function setToken() {
+      if (typeof(Storage) !== "undefined") {
+        sessionStorage.token = window.location.href.split('token=').pop();
+      } else {
+        alert('Your browser does not support web storage');
+      }
+    }
+  </script>
+
+</head>
+
+<body>
+  <script> setToken(); </script>
+
+  <div id="root">
+
+    <img src="aur.png">
+
+    <h1>Choose currency</h1>
+<label class="container2">RON
+  <input id="ron" type="radio" checked="checked" name="currency">
+  <span class="checkmark"></span>
+</label>
+<label class="container2">EUR
+  <input id="eur" type="radio" name="currency">
+  <span class="checkmark"></span>
+</label>
+<label class="container2">USD
+  <input id="usd" type="radio" name="currency">
+  <span class="checkmark"></span>
+</label>
+
+	<h1>Choose type</h1>
+<label class="container2"> Debit
+  <input id="debit" type="radio" checked="checked" name="type">
+  <span class="checkmark"></span>
+</label>
+<label class="container2"> Credit
+  <input id="credit" type="radio" name="type">
+  <span class="checkmark"></span>
+</label>
+<label class="container2"> Savings
+  <input id="savings" type="radio" name="type">
+  <span class="checkmark"></span>
+</label>
+
+	<h1 onclick="clicked()"> CREATE </h1>
+	<button onclick="goBack()"> Back to menu </button>
+
+   <script>
+      function goBack(){window.open("menu.html?token="+sessionStorage.token, "_self")}
+      function clicked() {
+      	var body = {};
+      	document.getElementsByName("currency").forEach(function(item) {
+          if (!body['currency'] && item.checked == true)
+            body['currency'] = item.id.toUpperCase();
+        });
+        document.getElementsByName("type").forEach(function(item) {
+          if (!body['type'] && item.checked == true)
+            body['type'] = item.id;
+        });
+          var request = new XMLHttpRequest();
+          request.open('POST', 'http://localhost:3000/accounts', true);
+          request.setRequestHeader('Authorization', 'Bearer '+sessionStorage.token);
+          request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+          request.onload = function() {
+            if (this.readyState === request.DONE && this.status == 200) {
+              alert('Account created successfully');
+            }
+            else {
+              alert('Could not create account');
+            }
+          } 
+          request.send(JSON.stringify(body));
+      }
+      
+  </script>
+
+</div>
+
+</body>
+</html>
