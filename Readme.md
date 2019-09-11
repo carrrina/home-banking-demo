@@ -1,7 +1,7 @@
 ##### Run the backend app first
 
 1. open terminal and go to backend/ directory
-2. `$ npm install`
+2. `$ npm install` then
 3.`$ npm run start`
 
 ##### Testing in Postman
